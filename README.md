@@ -12,5 +12,6 @@ This is a Django project for the customer portal of
 - poetry
 
 ## Local Setup
-1. init virtual environment by using poetry `poetry install` 
-2. run project `poetry run python manage.py runserver`
+1. init virtual environment by using poetry `poetry install`
+2. Create local config file `cp app/config/settings/local.example.py app/config/settings/local.py`
+3. run project `poetry run python manage.py runserver`
