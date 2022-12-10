@@ -1,12 +1,12 @@
 from django.urls import path
 
-from .views import UserIsAuthenticatedView, AuthView, GetCSRFTokenView
+from .views import AuthenticatedUserView, AuthView, GetCSRFTokenView
 
 
 urlpatterns = [
     path(
-        "is-authenticated",
-        UserIsAuthenticatedView.as_view(),
+        "get-authenticated-user",
+        AuthenticatedUserView.as_view(),
     ),
     path(
         "perform-authentication",
