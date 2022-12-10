@@ -1,0 +1,11 @@
+version: "3"
+
+volumes:
+  django-log-volume:
+  django-static-volume:
+
+services:
+  django:
+    container_name: give-me-insights-backend
+    volumes:
+      - django-log-volume:/app/logs/

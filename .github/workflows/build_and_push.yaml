@@ -1,0 +1,46 @@
+name: Build and Push Workflow
+
+on:
+  push:
+    tags: [v*]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Placeholder
+        run: echo "This is just a placeholder until tests are included"
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [test]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set Release Version
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+      - name: Build image
+        # TODO: make the docker build generic e.g. by using poetry version
+        run: docker build -t give-me-insights-backend:$RELEASE_VERSION .
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITAL_OCEAN_CONTAINER_REGISTRY_TOKEN }}
+
+      - name: Log in to DO Container Registry
+        run: doctl registry login --expiry-seconds 600
+
+      - name: Tag image
+        # TODO: make tagging generic e.g. by using poetry version
+        run: docker tag give-me-insights/give-me-insights-backend:$RELEASE_VERSION registry.digitalocean.com/give-me-insights/give-me-insights-backend:$RELEASE_VERSION
+
+      - name: Push image to DO Container Registry
+        # TODO: make tagging generic e.g. by using poetry version
+        run: docker push registry.digitalocean.com/give-me-insights/give-me-insights-backend:$RELEASE_VERSION
