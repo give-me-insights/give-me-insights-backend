@@ -65,7 +65,8 @@ THIRD_PARTY_APPS = [
     "storages",
 ]
 LOCAL_APPS = [
-  "apps.Account.apps.AccountConfig",
+    "apps.Account.apps.AccountConfig",
+    "apps.Projects.apps.ProjectsConfig",
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 

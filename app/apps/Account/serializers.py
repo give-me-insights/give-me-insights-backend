@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, get_user_model
 from rest_framework import serializers
-from .models import CompanyUser
+from .models import CompanyUser, Company
 
 
 User = get_user_model()
@@ -38,7 +38,15 @@ class AuthSerializer(serializers.Serializer):
         return attrs
 
 
+class CompanySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Company
+        fields = "__all__"
+
+
 class AuthUserSerializer(serializers.ModelSerializer):
+    company = CompanySerializer()
+
     class Meta:
         model = CompanyUser
         fields = "__all__"
