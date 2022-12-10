@@ -1,5 +1,5 @@
 import os
-from .base import *  # noqa
+from ._base import *  # noqa
 
 # GENERAL
 # ------------------------------------------------------------------------------
@@ -23,6 +23,7 @@ DATABASES = {
         "PASSWORD": os.environ["DB_PASSWORD"],
         "HOST": os.environ["DB_HOST"],
         "PORT": os.environ["DB_PORT"],
+        "OPTIONS": {"sslmode": "require"},
     }
 }
 
@@ -46,6 +47,8 @@ AWS_S3_ENDPOINT_URL = f'https://{os.getenv("AWS_S3_ENDPOINT")}'
 AWS_S3_OBJECT_PARAMETERS = {
     "CacheControl": "max-age=86400",
 }
+AWS_DEFAULT_ACL = 'public-read'
+AWS_QUERYSTRING_AUTH = False
 AWS_LOCATION = "staticfiles/"
 
 # STATIC
