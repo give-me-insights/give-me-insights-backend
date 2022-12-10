@@ -39,7 +39,7 @@ jobs:
 
       - name: Tag image
         # TODO: make tagging generic e.g. by using poetry version
-        run: docker tag give-me-insights/give-me-insights-backend:$RELEASE_VERSION registry.digitalocean.com/give-me-insights/give-me-insights-backend:$RELEASE_VERSION
+        run: docker tag give-me-insights-backend:$RELEASE_VERSION registry.digitalocean.com/give-me-insights/give-me-insights-backend:$RELEASE_VERSION
 
       - name: Push image to DO Container Registry
         # TODO: make tagging generic e.g. by using poetry version
