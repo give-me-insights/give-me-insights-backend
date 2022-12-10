@@ -96,7 +96,7 @@ class CompanyAdmin(admin.ModelAdmin):
 
 @admin.register(CompanyUser)
 class CompanyUserAdmin(admin.ModelAdmin):
-    list_display = ("__str__", "company", "email_address", "phone_number_1", "phone_number_2", )
+    list_display = ("user", "__str__", "company", "email_address", "phone_number_1", "phone_number_2", )
 
 
 admin.site.unregister(Group)
