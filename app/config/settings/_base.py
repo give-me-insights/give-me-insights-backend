@@ -11,7 +11,9 @@ APPS_DIR = BASE_DIR / "apps"
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
 DEBUG = False
-ENVIRONMENT = os.environ["ENV"]
+ENVIRONMENT = os.getenv("ENV", "prod")
+
+AUTH_USER_MODEL = 'Account.AuthUser'
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#language-code
 LANGUAGE_CODE = 'en-us'
