@@ -10,7 +10,15 @@ SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = os.environ["DJANGO_ALLOWED_HOSTS"].split()
 # https://docs.djangoproject.com/en/4.0/ref/settings/#std-setting-CSRF_TRUSTED_ORIGINS
-CSRF_TRUSTED_ORIGINS = []
+MIDDLEWARE += ["django.middleware.csrf.CsrfViewMiddleware"]
+CSRF_TRUSTED_ORIGINS = os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "").split()
+
+# CORS HEADERS
+# ------------------------------------------------------------------------------
+# https://github.com/adamchainz/django-cors-headers#cors_allowed_origins-sequencestr
+CORS_ALLOWED_ORIGINS = os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "").split()
+# https://github.com/adamchainz/django-cors-headers#cors_urls_regex-str--patternstr
+CORS_URLS_REGEX = r"^/api/.*$"
 
 # DATABASES
 # ------------------------------------------------------------------------------
