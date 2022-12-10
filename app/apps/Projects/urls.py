@@ -12,4 +12,8 @@ urlpatterns = [
         "all",
         ProjectListCreateView.as_view(),
     ),
+    path(
+        "retrieve/<slug:key>",
+        ProjectListCreateView.as_view(),
+    ),
 ]
