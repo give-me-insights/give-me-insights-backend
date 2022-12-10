@@ -18,3 +18,7 @@ patch_version_push_tag:
 
 push_tag:
 	@bash .scripts/create-version-tag.sh
+
+initial_migration:
+	@bash poetry run python app/manage.py migrate
+	@bash poetry run python app/manage.py loaddata company.json

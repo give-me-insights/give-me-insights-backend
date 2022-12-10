@@ -1,6 +1,6 @@
-
 from django.contrib.auth import authenticate, get_user_model
 from rest_framework import serializers
+from .models import CompanyUser, Company
 
 
 User = get_user_model()
@@ -26,7 +26,7 @@ class AuthSerializer(serializers.Serializer):
             except User.DoesNotExist:
                 raise serializers.ValidationError(err_msg, code="authorization")
             user = authenticate(
-                request=self.context.get("request"), username=user.username, password=password
+                request=self.context.get("request"), email=user.email, password=password
             )
             if not user:
                 raise serializers.ValidationError(err_msg, code="authorization")
@@ -38,8 +38,15 @@ class AuthSerializer(serializers.Serializer):
         return attrs
 
 
-class AuthUserSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    first_name = serializers.CharField()
-    last_name = serializers.CharField()
-    email = serializers.CharField()
+class CompanySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Company
+        fields = "__all__"
+
+
+class AuthUserSerializer(serializers.ModelSerializer):
+    company = CompanySerializer()
+
+    class Meta:
+        model = CompanyUser
+        fields = "__all__"

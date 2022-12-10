@@ -11,7 +11,9 @@ APPS_DIR = BASE_DIR / "apps"
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
 DEBUG = False
-ENVIRONMENT = os.environ["ENV"]
+ENVIRONMENT = os.getenv("ENV", "prod")
+
+AUTH_USER_MODEL = 'Account.AuthUser'
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#language-code
 LANGUAGE_CODE = 'en-us'
@@ -63,7 +65,8 @@ THIRD_PARTY_APPS = [
     "storages",
 ]
 LOCAL_APPS = [
-  "apps.Account.apps.AccountConfig",
+    "apps.Account.apps.AccountConfig",
+    "apps.Projects.apps.ProjectsConfig",
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 

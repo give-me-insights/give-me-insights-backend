@@ -1,0 +1,8 @@
+[{
+  "model": "Account.Company",
+  "pk": 1,
+  "fields": {
+    "name": "Give me insights",
+    "key": "GMI"
+  }
+}]
