@@ -14,3 +14,7 @@ patch_version_push_tag:
 	@git add pyproject.toml
 	@git commit -m "patch version"
 	@bash .scripts/create-version-tag.sh
+
+
+push_tag:
+	@bash .scripts/create-version-tag.sh
