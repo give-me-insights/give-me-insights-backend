@@ -371,4 +371,4 @@ fabric.properties
 # End of https://www.toptal.com/developers/gitignore/api/django,python,pycharm
 
 app/config/settings/local.py
-app/static/
+app/static/*
