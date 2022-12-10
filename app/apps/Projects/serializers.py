@@ -8,12 +8,10 @@ from apps.Account.serializers import CompanySerializer
 User = get_user_model()
 
 
-class ProjectCreateSerializer(serializers.ModelSerializer):
-    company = CompanySerializer(read_only=True)
-
+class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
-        fields = ["title", "key", "description", "company", ]
+        fields = ["id", "key", "title", "description", "timestamp", "last_change_timestamp", ]
 
     def create(self, validated_data, *args, **kwargs):
         user: User = validated_data.pop("user")
