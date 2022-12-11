@@ -39,15 +39,15 @@ class SourceDataSchemaMappingAdmin(admin.ModelAdmin):
 @admin.register(SourceDataRowRaw)
 class SourceDataRowRawAdmin(admin.ModelAdmin):
     list_filter = ("source", )
-    list_display = ("__str__", "source", "timestamp", "value", )
+    list_display = ("id", "source", "timestamp", "value", )
 
 
 @admin.register(GroupedSourceData)
 class GroupedSourceDataAdmin(admin.ModelAdmin):
     list_filter = ("source", "by_key", "method", )
-    list_display = ("__str__", "source", "timestamp", "by_key", "method", "values", )
+    list_display = ("id", "source", "timestamp", "by_key", "method", "values", )
 
 
 @admin.register(AggregationControl)
 class AggregationControlAdmin(admin.ModelAdmin):
-    list_display = ("source", "reset_process")
+    list_display = ("source", "reset_process", "is_in_progress", "last_health_state", )

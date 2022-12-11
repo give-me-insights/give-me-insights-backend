@@ -59,7 +59,7 @@ def update_or_create_group_counts(row, source, column_name, method):
             type="g1",
             by_key=column_name,
             method=method,
-            values=row["count"]
+            values={"count": row["count"]}
         )
 
 
@@ -87,7 +87,6 @@ def update_or_create_group_numbers(row, source, column_name, method, df):
             method=method,
             values=values
         )
-
 
 
 class Command(BaseCommand):
@@ -145,17 +144,27 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         unique_source_ids = list(set(SourceDataRowRaw.objects.values_list("source", flat=True).distinct()))
         for source_id in unique_source_ids:
-            self.stdout.write(f"Start Operation for {source_id}")
+            control = None
             try:
                 source = DataSource.objects.get(id=source_id)
+                self.stdout.write(f"Start Operation for {source.title}")
                 control, _ = AggregationControl.objects.get_or_create(source=source)
+                control.is_in_progress = True
+                control.save()
                 if control.reset_process:
                     self.reset_process(source)
                     control.reset_process = False
                     control.save()
                 df = self.load_dataframe(source_id)
                 self.perform_grouping(df, source)
+                control.is_in_progress = False
+                control.last_health_state = "h"
+                control.save()
             except Exception as e:
+                if control is not None:
+                    control.is_in_progress = False
+                    control.last_health_state = "u"
+                    control.save()
                 self.stdout.write(f"Operation for {source_id} Failed: {e}")
         self.stdout.write("Start Sleeping for 2 Minutes")
         sleep(120)

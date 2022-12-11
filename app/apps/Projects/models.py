@@ -177,3 +177,14 @@ class AggregationControl(models.Model):
     reset_process = models.BooleanField(
         default=False,
     )
+    is_in_progress = models.BooleanField(
+        default=False,
+    )
+    last_health_state = models.CharField(
+        max_length=1,
+        choices=[
+            ("h", "Healthy"),
+            ("u", "Unhealthy"),
+        ],
+        default="h"
+    )
