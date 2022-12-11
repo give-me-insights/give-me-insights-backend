@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from .models import Project, DataSource, Event, ProjectLink
+from .models import Project, DataSource, Event, ProjectLink, SourceDataRowRaw
 
 
 User = get_user_model()

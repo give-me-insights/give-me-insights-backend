@@ -1,7 +1,14 @@
-from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, DestroyAPIView
-from .models import Project, DataSource, Event, ProjectLink
-from .serializers import ProjectSerializer, DataSourceSerializer, EventSerializer, ProjectLinkSerializer
+from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, DestroyAPIView, ListAPIView
+from .models import Project, DataSource, Event, ProjectLink, SourceDataRowRaw, SourceDataSchemaMapping
+from .serializers import (
+    ProjectSerializer,
+    DataSourceSerializer,
+    EventSerializer,
+    ProjectLinkSerializer,
+)
 from .permissions import ProjectPermissions
+from rest_framework.response import Response
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.generics import get_object_or_404
 
 
@@ -54,3 +61,23 @@ class ProjectLinkListCreateView(PluginMixin, ListCreateAPIView, DestroyAPIView):
     serializer_class = ProjectLinkSerializer
     queryset = ProjectLink.objects
     permission_classes = (ProjectPermissions, )
+
+
+class SourceDataRawView(ListAPIView):
+    lookup_field = "source__key"
+    lookup_url_kwarg = "source"
+    queryset = SourceDataRowRaw.objects
+    permission_classes = (ProjectPermissions,)
+    authentication_classes = (TokenAuthentication, SessionAuthentication, )
+
+    def list(self, request, *args, **kwargs):
+        columns = SourceDataSchemaMapping.objects.get(source__key=kwargs["source"]).mapping.values()
+        queryset = self.filter_queryset(self.get_queryset())
+        entities = [
+            tuple([entity.timestamp.timestamp()] + list(entity.value.values()))
+            for entity in queryset.all()
+        ]
+        return Response({
+            "columns": ["timestamp"] + list(columns),
+            "values": entities
+        })
