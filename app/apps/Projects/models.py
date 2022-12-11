@@ -6,7 +6,7 @@ class Project(models.Model):
     key = models.CharField(
         max_length=4,
         unique=True,
-        # editable=False,
+        editable=False,
     )
     title = models.CharField(
         max_length=80,
@@ -42,7 +42,7 @@ class ProjectPluginEntity(models.Model):
     key = models.CharField(
         max_length=6,
         unique=True,
-        # editable=False,
+        editable=False,
     )
     project = models.ForeignKey(
         to=Project,
@@ -79,6 +79,10 @@ class DataSource(ProjectPluginEntity):
     @property
     def inbound_topic(self):
         return f"DIT--{self.project.company.key}--{self.project.key}--{self.key}"
+
+    @property
+    def base_topic(self):
+        return f"{self.project.company.key}--{self.project.key}--{self.key}"
 
 
 class ProjectLink(ProjectPluginEntity):

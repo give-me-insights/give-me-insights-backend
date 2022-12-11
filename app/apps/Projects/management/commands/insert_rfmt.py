@@ -14,7 +14,9 @@ def get_dict_depth(d: dict):
     return 0
 
 
-class Command(BaseCommand, BaseKafkaConsumer):
+class Command(BaseKafkaConsumer):
+    _topic_prefix: str = "RFMT"
+
     def insert_row(self, source: DataSource, message: dict):
         timestamp = datetime.fromtimestamp(int(message.pop("timestamp")))
         try:
@@ -22,13 +24,7 @@ class Command(BaseCommand, BaseKafkaConsumer):
         except IntegrityError:
             raise CommandError(f"Insert Raw Source Data Row {message} for source {source.key} Failed.")
 
-    def handle(self, *args, **options):
-        self._consumer.subscribe(pattern="RFMT--(.*?)")
-        for message in self._consumer:
-            self.stdout.write(f"Consume Inbound Data from Topic {message.topic}")
-            try:
-                source_data = self.get_source_data_from_topic(message.topic)
-                message_value = self.get_message_dict(message.value)
-                self.insert_row(source_data, message_value)
-            except Exception as e:
-                self.stdout.write(f"Failure for message. Message will be ignored. {e}")
+    def handle_message(self, message, **kwargs):
+        source_data = self.get_source_data_from_topic(message.topic)
+        message_value = self.get_message_dict(message.value)
+        self.insert_row(source_data, message_value)
