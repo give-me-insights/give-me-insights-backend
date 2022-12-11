@@ -38,7 +38,7 @@ class Project(models.Model):
         return super().save(*args, **kwargs)
 
 
-class DataSource(models.Model):
+class ProjectPluginEntity(models.Model):
     key = models.CharField(
         max_length=6,
         unique=True,
@@ -47,7 +47,6 @@ class DataSource(models.Model):
     project = models.ForeignKey(
         to=Project,
         on_delete=models.CASCADE,
-        related_name="sources",
     )
     title = models.CharField(
         max_length=128,
@@ -60,6 +59,7 @@ class DataSource(models.Model):
     )
 
     class Meta:
+        abstract = True
         unique_together = ('key', 'project', )
 
     def __str__(self):
@@ -74,6 +74,33 @@ class DataSource(models.Model):
     def company(self):
         return self.project.company
 
+
+class DataSource(ProjectPluginEntity):
     @property
     def inbound_topic(self):
         return f"DIT--{self.project.company.key}--{self.project.key}--{self.key}"
+
+
+class ProjectLink(ProjectPluginEntity):
+    url = models.URLField(
+        unique=True,
+    )
+
+
+class Event(ProjectPluginEntity):
+    start_date = models.DateField()
+    is_expected = models.BooleanField(
+        default=True,
+        help_text="Info whether Event was expected or not (Corona 2019 would have been an unexpected event.)"
+    )
+    duration = models.IntegerField(
+        default=0,
+    )
+    duration_unit = models.CharField(
+        max_length=1,
+        choices=[
+            ("h", "hours"),
+            ("d", "days"),
+            ("y", "years"),
+        ]
+    )

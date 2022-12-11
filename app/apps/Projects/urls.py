@@ -1,6 +1,11 @@
 from django.urls import path
 
-from .views import ProjectListCreateRetrieveView, DataSourceListCreateView
+from .views import (
+    ProjectListCreateRetrieveView,
+    DataSourceListCreateView,
+    EventListCreateView,
+    ProjectLinkListCreateView,
+)
 
 
 urlpatterns = [
@@ -27,5 +32,29 @@ urlpatterns = [
     path(
         "retrieve/<slug:project_key>/sources/delete/<slug:key>",
         DataSourceListCreateView.as_view(),
+    ),
+    path(
+        "retrieve/<slug:project_key>/events/create",
+        EventListCreateView.as_view(),
+    ),
+    path(
+        "retrieve/<slug:project_key>/events/all",
+        EventListCreateView.as_view(),
+    ),
+    path(
+        "retrieve/<slug:project_key>/events/delete/<slug:key>",
+        EventListCreateView.as_view(),
+    ),
+    path(
+        "retrieve/<slug:project_key>/project-links/create",
+        ProjectLinkListCreateView.as_view(),
+    ),
+    path(
+        "retrieve/<slug:project_key>/project-links/all",
+        ProjectLinkListCreateView.as_view(),
+    ),
+    path(
+        "retrieve/<slug:project_key>/project-links/delete/<slug:key>",
+        ProjectLinkListCreateView.as_view(),
     )
 ]

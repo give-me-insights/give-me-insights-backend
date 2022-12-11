@@ -1,6 +1,6 @@
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, DestroyAPIView
-from .models import Project, DataSource
-from .serializers import ProjectSerializer, DataSourceCreateSerializer
+from .models import Project, DataSource, Event, ProjectLink
+from .serializers import ProjectSerializer, DataSourceSerializer, EventSerializer, ProjectLinkSerializer
 from .permissions import ProjectPermissions
 from rest_framework.generics import get_object_or_404
 
@@ -26,15 +26,31 @@ class ProjectListCreateRetrieveView(ListCreateAPIView, RetrieveAPIView):
             return self.list(request, *args, **kwargs)
 
 
-class DataSourceListCreateView(ListCreateAPIView, DestroyAPIView):
-    lookup_field = "key"
-    serializer_class = DataSourceCreateSerializer
-    queryset = DataSource.objects
-    permission_classes = (ProjectPermissions, )
+class PluginMixin:
+    def perform_create(self, serializer):
+        project = get_object_or_404(Project.objects, key=self.kwargs["project_key"])
+        serializer.save(project=project)
 
     def filter_queryset(self, queryset):
         return queryset.filter(project__company=self.request.user.company)
 
-    def perform_create(self, serializer):
-        project = get_object_or_404(Project.objects, key=self.kwargs["project_key"])
-        serializer.save(project=project)
+
+class DataSourceListCreateView(PluginMixin, ListCreateAPIView, DestroyAPIView):
+    lookup_field = "key"
+    serializer_class = DataSourceSerializer
+    queryset = DataSource.objects
+    permission_classes = (ProjectPermissions, )
+
+
+class EventListCreateView(PluginMixin, ListCreateAPIView, DestroyAPIView):
+    lookup_field = "key"
+    serializer_class = EventSerializer
+    queryset = Event.objects
+    permission_classes = (ProjectPermissions, )
+
+
+class ProjectLinkListCreateView(PluginMixin, ListCreateAPIView, DestroyAPIView):
+    lookup_field = "key"
+    serializer_class = ProjectLinkSerializer
+    queryset = ProjectLink.objects
+    permission_classes = (ProjectPermissions, )
