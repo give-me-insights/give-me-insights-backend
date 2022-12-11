@@ -6,7 +6,7 @@ class Project(models.Model):
     key = models.CharField(
         max_length=4,
         unique=True,
-        editable=False,
+        # editable=False,
     )
     title = models.CharField(
         max_length=80,
@@ -42,7 +42,7 @@ class ProjectPluginEntity(models.Model):
     key = models.CharField(
         max_length=6,
         unique=True,
-        editable=False,
+        # editable=False,
     )
     project = models.ForeignKey(
         to=Project,
@@ -104,3 +104,15 @@ class Event(ProjectPluginEntity):
             ("y", "years"),
         ]
     )
+
+
+class SourceDataSchemaMapping(models.Model):
+    source = models.OneToOneField(
+        to=DataSource,
+        on_delete=models.CASCADE,
+        related_name="schema",
+    )
+    mapping = models.JSONField()
+
+    def __str__(self):
+        return self.source.__str__()
