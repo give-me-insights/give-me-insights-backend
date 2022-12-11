@@ -41,6 +41,55 @@ def group_number(df_root, group_by_freq: str, feature_name: str, aggr_method: st
     return tmp
 
 
+def update_or_create_group_counts(row, source, column_name, method):
+    try:
+        entity = GroupedSourceData.objects.get(
+            source=source,
+            timestamp=row["timestamp"],
+            type="g1",
+            by_key=column_name,
+            method=method,
+        )
+        entity.values = {"count": row["count"]}
+        entity.save()
+    except GroupedSourceData.DoesNotExist:
+        GroupedSourceData.objects.create(
+            source=source,
+            timestamp=row["timestamp"],
+            type="g1",
+            by_key=column_name,
+            method=method,
+            values=row["count"]
+        )
+
+
+def update_or_create_group_numbers(row, source, column_name, method, df):
+    values = {
+        f"{method}_{column_name}": row[f"{method}_{column_name}"]
+        for col_name in df.columns if column_name != "timestamp" and col_name != column_name
+    }
+    try:
+        entity = GroupedSourceData.objects.get(
+            source=source,
+            timestamp=row["timestamp"],
+            type="g1",
+            by_key=column_name,
+            method=method,
+        )
+        entity.values = values
+        entity.save()
+    except GroupedSourceData.DoesNotExist:
+        GroupedSourceData.objects.create(
+            source=source,
+            timestamp=row["timestamp"],
+            type="g1",
+            by_key=column_name,
+            method=method,
+            values=values
+        )
+
+
+
 class Command(BaseCommand):
 
     def load_dataframe(self, source_id: int):
@@ -66,31 +115,14 @@ class Command(BaseCommand):
     def perform_group_count(self, df, column_name, source):
         count_df = group_count(df, "H", column_name)
         count_df.apply(
-            lambda row: GroupedSourceData.objects.update_or_create(
-                source=source,
-                timestamp=row["timestamp"],
-                type="g1",
-                by_key=column_name,
-                method="count",
-                values={"count": row["count"]}
-            ),
+            lambda row: update_or_create_group_counts(row, source, column_name, "count"),
             axis=1
         )
 
     def perform_group_number(self, df, column_name, aggr_method, source):
         aggr_df = group_number(df, "H", column_name, aggr_method=aggr_method)
         aggr_df.apply(
-            lambda row: GroupedSourceData.objects.update_or_create(
-                source=source,
-                timestamp=row["timestamp"],
-                type="g1",
-                by_key=column_name,
-                method=aggr_method,
-                values={
-                    f"{aggr_method}_{column_name}": row[f"{aggr_method}_{column_name}"]
-                    for col_name in df.columns if column_name != "timestamp" and col_name != column_name
-                }
-            ),
+            lambda row: update_or_create_group_numbers(row, source, column_name, aggr_method, df),
             axis=1
         )
 
@@ -124,5 +156,6 @@ class Command(BaseCommand):
                 df = self.load_dataframe(source_id)
                 self.perform_grouping(df, source)
             except Exception as e:
-                self.stdout.write(f"Operation for {source_id} Failed.")
-        sleep(600)
+                self.stdout.write(f"Operation for {source_id} Failed: {e}")
+        self.stdout.write("Start Sleeping for 2 Minutes")
+        sleep(120)
