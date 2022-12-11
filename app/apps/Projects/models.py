@@ -166,6 +166,7 @@ class GroupedSourceData(SourceDataRow):
 
     class Meta:
         ordering = ('timestamp', )
+        unique_together = ("source", "timestamp", "type", "by_key", "method", )
 
 
 class AggregationControl(models.Model):
