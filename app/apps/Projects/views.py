@@ -1,5 +1,13 @@
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, DestroyAPIView, ListAPIView
-from .models import Project, DataSource, Event, ProjectLink, SourceDataRowRaw, SourceDataSchemaMapping
+from .models import (
+    Project,
+    DataSource,
+    Event,
+    ProjectLink,
+    SourceDataRowRaw,
+    SourceDataSchemaMapping,
+    GroupedSourceData,
+)
 from .serializers import (
     ProjectSerializer,
     DataSourceSerializer,
@@ -79,5 +87,46 @@ class SourceDataRawView(ListAPIView):
         ]
         return Response({
             "columns": ["timestamp"] + list(columns),
+            "values": entities
+        })
+
+
+class GroupedSourceDataView(ListAPIView):
+    queryset = GroupedSourceData.objects
+    permission_classes = (ProjectPermissions,)
+    authentication_classes = (TokenAuthentication, SessionAuthentication,)
+
+    def list(self, request, *args, **kwargs):
+        columns = SourceDataSchemaMapping.objects.get(source__key=kwargs["source_key"]).mapping
+        inverted_dict = {value: key for key, value in columns.items()}
+        filter_ = {
+            "source__project__key": kwargs["project_key"],
+            "source__key": kwargs["source_key"],
+            "method": kwargs["group_by_method"],
+            "by_key": inverted_dict[kwargs["group_by_key"]],
+        }
+        entities = []
+        column_names = ["timestamp", kwargs["group_by_key"]]
+        columns_set = False
+        for entity in self.queryset.filter(**filter_).all():
+            timestamp = entity.timestamp.timestamp()
+            value_of_key = entity.values.pop("value_of_key")
+            values = []
+            for key, measurement in entity.values.items():
+                if not columns_set:
+                    if "mean" in key or "sum" in key:
+                        try:
+                            column_names.append(columns[key.replace("sum_", "").replace("mean_", "")])
+                        except:
+                            column_names.append(key)
+                    else:
+                        column_names.append(key)
+                values.append(measurement)
+            # it's correct!
+            columns_set = True
+            entities.append([timestamp, value_of_key] + values)
+
+        return Response({
+            "columns": column_names,
             "values": entities
         })

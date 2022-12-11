@@ -50,7 +50,7 @@ def update_or_create_group_counts(row, source, column_name, method):
             by_key=column_name,
             method=method,
         )
-        entity.values = {"count": row["count"]}
+        entity.values = {"value_of_key": row[column_name], "count": row["count"]}
         entity.save()
     except GroupedSourceData.DoesNotExist:
         GroupedSourceData.objects.create(
@@ -59,7 +59,7 @@ def update_or_create_group_counts(row, source, column_name, method):
             type="g1",
             by_key=column_name,
             method=method,
-            values={"count": row["count"]}
+            values={"value_of_key": row[column_name], "count": row["count"]}
         )
 
 
@@ -68,6 +68,7 @@ def update_or_create_group_numbers(row, source, column_name, method, df):
         f"{method}_{column_name}": row[f"{method}_{column_name}"]
         for col_name in df.columns if column_name != "timestamp" and col_name != column_name
     }
+    values["value_of_key"] = row[column_name]
     try:
         entity = GroupedSourceData.objects.get(
             source=source,

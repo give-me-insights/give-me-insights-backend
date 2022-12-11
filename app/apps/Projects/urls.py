@@ -6,6 +6,7 @@ from .views import (
     EventListCreateView,
     ProjectLinkListCreateView,
     SourceDataRawView,
+    GroupedSourceDataView,
 )
 
 
@@ -61,5 +62,9 @@ urlpatterns = [
     path(
         "retrieve/<slug:project_key>/sources/retrieve/<slug:source>/raw-data",
         SourceDataRawView.as_view(),
+    ),
+    path(
+        "retrieve/<slug:project_key>/sources/retrieve/<slug:source_key>/grouped-data/<slug:group_by_key>/<slug:group_by_method>",
+        GroupedSourceDataView.as_view(),
     )
 ]
