@@ -57,18 +57,17 @@ AWS_S3_OBJECT_PARAMETERS = {
 }
 AWS_DEFAULT_ACL = 'public-read'
 AWS_QUERYSTRING_AUTH = False
-AWS_STATIC_FILE_LOCATION = "staticfiles/"
-AWS_MEDIA_FILE_LOCATION = "mediafiles/"
+AWS_LOCATION = "staticfiles/"
 
 # STATIC
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = [BASE_DIR / "staticfiles" / "react" / "build" / "static"]  # noqa
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
-STATIC_URL = "https://%s/%s/" % (AWS_S3_ENDPOINT_URL, AWS_STATIC_FILE_LOCATION)
+STATIC_URL = "https://%s/%s/" % (AWS_S3_ENDPOINT_URL, AWS_LOCATION)
 STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
 # MEDIA
 # ------------------------------------------------------------------------------
-MEDIA_URL = "https://%s/%s/" % (AWS_S3_ENDPOINT_URL, AWS_MEDIA_FILE_LOCATION)
+MEDIA_URL = "https://%s/%s/" % (AWS_S3_ENDPOINT_URL, AWS_LOCATION)
