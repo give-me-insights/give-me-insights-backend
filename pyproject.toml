@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "give-me-insights-backend"
-version = "0.1.21"
+version = "0.1.22"
 description = ""
 authors = ["JangasCodingplace <janisgoesser92@gmail.com>"]
 
