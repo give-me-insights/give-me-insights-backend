@@ -39,7 +39,7 @@ class PluginMixin:
         serializer.save(project=project)
 
     def filter_queryset(self, queryset):
-        return queryset.filter(project__company=self.request.user.company)
+        return queryset.filter(project__company=self.request.user.company, project__key=self.kwargs["project_key"])
 
 
 class DataSourceListCreateView(PluginMixin, ListCreateAPIView, DestroyAPIView):
