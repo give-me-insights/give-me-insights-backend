@@ -5,6 +5,7 @@ from .views import (
     DataSourceListCreateView,
     EventListCreateView,
     ProjectLinkListCreateView,
+    SourceDataRawView,
 )
 
 
@@ -56,5 +57,9 @@ urlpatterns = [
     path(
         "retrieve/<slug:project_key>/project-links/delete/<slug:key>",
         ProjectLinkListCreateView.as_view(),
+    ),
+    path(
+        "retrieve/<slug:project_key>/sources/retrieve/<slug:source>/raw-data",
+        SourceDataRawView.as_view(),
     )
 ]

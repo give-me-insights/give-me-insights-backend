@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "give-me-insights-backend"
-version = "0.1.18"
+version = "0.1.20"
 description = ""
 authors = ["JangasCodingplace <janisgoesser92@gmail.com>"]
 
@@ -13,6 +13,7 @@ django-cors-headers = "^3.13.0"
 boto3 = "^1.26.26"
 django-storages = "^1.13.1"
 gunicorn = "^20.1.0"
+kafka-python = "^2.0.2"
 
 [tool.poetry.dev-dependencies]
 

@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from .models import Project, DataSource, Event, ProjectLink
+from .models import Project, DataSource, Event, ProjectLink, SourceDataRowRaw
 
 
 User = get_user_model()
@@ -23,7 +23,7 @@ class DataSourceSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "project": {
                 "read_only": True,
-            }
+            },
         }
 
 
@@ -45,7 +45,7 @@ class EventSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "project": {
                 "read_only": True,
-            }
+            },
         }
 
 
@@ -56,5 +56,5 @@ class ProjectLinkSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "project": {
                 "read_only": True,
-            }
+            },
         }
