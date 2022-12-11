@@ -23,5 +23,9 @@ urlpatterns = [
     path(
         "retrieve/<slug:project_key>/sources/all",
         DataSourceListCreateView.as_view(),
+    ),
+    path(
+        "retrieve/<slug:project_key>/sources/delete/<slug:key>",
+        DataSourceListCreateView.as_view(),
     )
 ]

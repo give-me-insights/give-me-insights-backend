@@ -1,4 +1,4 @@
-from rest_framework.generics import ListCreateAPIView, RetrieveAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, DestroyAPIView
 from .models import Project, DataSource
 from .serializers import ProjectSerializer, DataSourceCreateSerializer
 from .permissions import ProjectPermissions
@@ -26,7 +26,8 @@ class ProjectListCreateRetrieveView(ListCreateAPIView, RetrieveAPIView):
             return self.list(request, *args, **kwargs)
 
 
-class DataSourceListCreateView(ListCreateAPIView):
+class DataSourceListCreateView(ListCreateAPIView, DestroyAPIView):
+    lookup_field = "key"
     serializer_class = DataSourceCreateSerializer
     queryset = DataSource.objects
     permission_classes = (ProjectPermissions, )
