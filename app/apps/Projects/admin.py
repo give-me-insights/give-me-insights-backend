@@ -1,5 +1,14 @@
 from django.contrib import admin
-from .models import Project, DataSource, ProjectLink, Event, SourceDataSchemaMapping, SourceDataRowRaw
+from .models import (
+    Project,
+    DataSource,
+    ProjectLink,
+    Event,
+    SourceDataSchemaMapping,
+    SourceDataRowRaw,
+    GroupedSourceData,
+    AggregationControl,
+)
 
 
 @admin.register(Project)
@@ -30,3 +39,15 @@ class SourceDataSchemaMappingAdmin(admin.ModelAdmin):
 @admin.register(SourceDataRowRaw)
 class SourceDataRowRawAdmin(admin.ModelAdmin):
     list_filter = ("source", )
+    list_display = ("__str__", "source", "timestamp", "value", )
+
+
+@admin.register(GroupedSourceData)
+class GroupedSourceDataAdmin(admin.ModelAdmin):
+    list_filter = ("source", "by_key", "method", )
+    list_display = ("__str__", "source", "timestamp", "by_key", "method", "values", )
+
+
+@admin.register(AggregationControl)
+class AggregationControlAdmin(admin.ModelAdmin):
+    list_display = ("source", "reset_process")

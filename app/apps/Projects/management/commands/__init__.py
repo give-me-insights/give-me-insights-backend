@@ -1,4 +1,3 @@
-import kafka
 import os
 
 

@@ -142,9 +142,37 @@ class SourceDataRow(models.Model):
 
     class Meta:
         abstract = True
-        ordering = ('timestamp', )
-        unique_together = ("source", "timestamp", "type", )
 
 
 class SourceDataRowRaw(SourceDataRow):
     value = models.JSONField()
+
+    class Meta:
+        ordering = ('timestamp', )
+        unique_together = ("source", "timestamp", "type", )
+
+
+class GroupedSourceData(SourceDataRow):
+    by_key = models.CharField(max_length=12)
+    method = models.CharField(
+        max_length=6,
+        choices=[
+            ("count", "Count"),
+            ("mean", "Mean"),
+            ("sum", "Sum"),
+        ]
+    )
+    values = models.JSONField()
+
+    class Meta:
+        ordering = ('timestamp', )
+
+
+class AggregationControl(models.Model):
+    source = models.OneToOneField(
+        to=DataSource,
+        on_delete=models.CASCADE,
+    )
+    reset_process = models.BooleanField(
+        default=False,
+    )
