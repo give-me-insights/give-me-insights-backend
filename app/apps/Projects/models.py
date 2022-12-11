@@ -116,3 +116,31 @@ class SourceDataSchemaMapping(models.Model):
 
     def __str__(self):
         return self.source.__str__()
+
+
+class SourceDataRow(models.Model):
+    source = models.ForeignKey(
+        to=DataSource,
+        on_delete=models.CASCADE,
+    )
+    timestamp = models.DateTimeField(
+        db_index=True,
+    )
+    type = models.CharField(
+        db_index=True,
+        max_length=2,
+        choices=[
+            ("r", "Raw"),
+            ("g1", "Group by one Key"),
+            ("g2", "Group by two Keys"),
+        ]
+    )
+
+    class Meta:
+        abstract = True
+        ordering = ('timestamp', )
+        unique_together = ("source", "timestamp", "type", )
+
+
+class SourceDataRowRaw(SourceDataRow):
+    value = models.JSONField()
