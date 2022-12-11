@@ -150,6 +150,9 @@ class Command(BaseCommand):
                 source = DataSource.objects.get(id=source_id)
                 self.stdout.write(f"Start Operation for {source.title}")
                 control, _ = AggregationControl.objects.get_or_create(source=source)
+                if control.is_in_progress:
+                    self.stdout.write(f"{source.title} Already handled by another worker. Continue")
+                    continue
                 control.is_in_progress = True
                 control.save()
                 if control.reset_process:
